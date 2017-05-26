@@ -83,16 +83,17 @@ public class MainActivity extends Activity {
                     Log.i("-------------Set", ""+alarmNumber);
                     //Pentru fiecare alarma se asociaza cate un buton de remove
                     Button buttonRemove = (Button)addView.findViewById(R.id.remove);
-                    setAlarm(alarmNumber, PickedTime, pickedPhoneNumber);
+                    setAlarm(addView,alarmNumber, PickedTime, pickedPhoneNumber);
                     buttonRemove.setOnClickListener(new OnClickListener(){
                         @Override
                         public void onClick(View v) {
                             //Actiunea pentru butonul de remove
                             ((LinearLayout)addView.getParent()).removeView(addView);
-                            Log.i("-------------Remove", ""+alarmNumber);
                             cancelAlarm(addView.getId());
                         }});
                     container.addView(addView);
+                    nameOfPickedContact.setText("");
+                    timeOfAlarm.setText("");
                 }
             }});
         nameOfPickedContact = (TextView) findViewById(R.id.name);
@@ -152,12 +153,15 @@ public class MainActivity extends Activity {
             PickedTime = calSet;
         }};
     //Seteaza alarma; trimite la AlarmReceive numarul de telefon
-    private void setAlarm(int alarmNr, Calendar targetCal, String pickedPhoneNr){
+    private void setAlarm(View alarm,int alarmNr, Calendar targetCal, String pickedPhoneNr){
         Intent intent = new Intent(getBaseContext(), AlarmReceiver.class);
         intent.putExtra("phoneNo", pickedPhoneNr);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, alarmNr,  intent, 0);
         AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, targetCal.getTimeInMillis(), pendingIntent);
+
+//        Log.i("-------------Remove", ""+alarmNr);
+//        ((LinearLayout)alarm.getParent()).removeView(alarm);
     }
     //Listener pentru apelul telefonic
     private class PhoneCallListener extends PhoneStateListener {
